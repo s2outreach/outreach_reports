@@ -1,0 +1,9 @@
+Risk Management
+1. After creating an account, user will not be able to change the id or password. 
+   Workaround: User has to create a new account or contact admin to get the account deleted.
+2. User will not be able to reset the password. 
+   Workaround: User has to create new account or contact admin to get the account deleted.
+3. Multi Factor Authentication is not enabled.
+4. Admin password cannot be changed. Workaround: Contact IT support to get it changed.
+5. Allows multi login for the same id.
+6. User once registers for an event cannot deregister.
