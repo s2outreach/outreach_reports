@@ -4,41 +4,53 @@ Pre Requisites
 3. Docker installed in the system
 4. Maven setup in the system
 5. Nodejs installed in the system
+6. MySql installed in the system
 
 --------------Run application in local--------------
-Step 1: Database setup
-1. docker run --name tmsdb -e MYSQL_DATABASE=tmsdb -e MYSQL_ROOT_PASSWORD=root -e MYSQL_ROOT_HOST=% -p 3306:3306 mysql/mysql-server:5.7
+Step 1: MySql setup
+1. Please setup database as below
+Database: outreach
+password: pass@word1
+port: 3306
 
-Step 2: Extract files
-1. Extract 539617_practise_case_study
+Step 2: Kafka setup
+1. Download kafka from https://kafka.apache.org/quickstart
+2. Unzip downloaded file
+3. Open command prompt and cd to the extracted folder C:\.....\kafka_2.12-2.4.0
+4. Run 'bin\windows\zookeeper-server-start config\zookeeper.properties'
+5. Open command prompt and cd to the extracted folder C:\.....\kafka_2.12-2.4.0
+6. Run 'bin\windows\kafka-server-start config\server.properties'
+7. Open command prompt and cd to the extracted folder C:\.....\kafka_2.12-2.4.0
+8. Run 'bin\windows\kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic addlog'
 
-Step 3: kafka setup
+Step 3: local dynamodb setup
+1. Download local dynamodb from https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.DownloadingAndRunning.html
+2. Unzip the extracted file
+3. cd to the extracted folder C:.....\dynamoDBLocal
+4. Run 'java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -inMemory -sharedDb'
+5. Open browser and go to http://localhost:8000/shell/# to open local dynamodb console
+6. Run all the three scripts(event, eventuser, log) from 
+
+Step 4: Build and run microservices
 1. Open command prompt window
-1. Navigate to travel_management_system-microservices\tms_kafka_service
-2. Run 'docker-compose up'
-
-Step 4: local dynamodb setup
-1. Open command prompt window and run 'docker run -p 8000:8000 --name dynamolocal amazon/dynamodb-local -jar DynamoDBLocal.jar -inMemory -sharedDb'
-2. Open browser and go to http://localhost:8000/shell/# to open local dynamodb console.
-3. Run the script in the editor from '539617_practise_case_study\scripts\dynamodb_script'
-
-Step 5: Build and run microservices
-1. Open command prompt window
-2. Navigate to \539617_practise_case_study\travel_management_system-microservices\tms_eureka_service
+2. Navigate to \539617_s2_outreach\microservices\outreach_eureka_service
 3. Run 'mvn clean package'
-4. Navigate to \target folder and run 'java -jar tms_eureka_service-0.0.1-SNAPSHOT.jar'
+4. Run 'java -jar target\outreach_eureka_service-0.0.1-SNAPSHOT.jar'
 5. Repeat step 3 and 4 for below services as well in the same order with the corresponding jar files
 
-tms_config_service
-tms_zuul_service
-tms_auth_service
-tms_ride_service
-tms_driver_service
-tms_rider_service
+outreach_config_service
+outreach_zuul_service
+outreach_observer_service
+outreach_auth_service
+outreach_event_service
+outreach_email_service
+outreach_log_service
 
-6. Navigate to 539617_practise_case_study\travel_management_system-ui
+Step 5: Build UI service
+1. Open command prompt window
+2. Navigate to \539617_s2_outreach\outreachui
 7. Run 'npm install'
-8. ng serve --o
+8. Run ng serve --o
 
 --------------Run application in AWS--------------
 
@@ -55,6 +67,7 @@ Step 1: VPC, subnets and security group setup
 8761
 8888
 8080
+8081
 9092
 80
 6. Create another security group and assign the VPC created in step 1. This will be private security group
@@ -83,15 +96,15 @@ Step 4: Kafka setup
 Step 3: Route53 setup for Eureka server
 1. Navigate to EC2 service and allocate an elastic ip
 2. Navigate to Route53 service and go to 'Hosted Zones'
-3. Create a hosted zone 'tms.net'
+3. Create a hosted zone 'outreach.net'
 4. Create a record set as below
    name: txt.ap-south-1
    type: TXT - text
-   value: "ap-south-1a.tms.net"
+   value: "ap-south-1a.outreach.net"
 5. Create another record set as below
    name: txt.ap-south-1a
    type: TXT - text
-   value: "ec2-15-206-3-195.ap-south-1.compute-1.amazonaws.com"
+   value: "ec2-<elastic-ip>.ap-south-1.compute-1.amazonaws.com"
 
 Step 4: Extract files
 1. Extract 539617_practise_case_study zip file
